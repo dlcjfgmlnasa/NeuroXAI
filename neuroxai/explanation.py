@@ -90,3 +90,85 @@ class BrainExplainer(object):
         predicate = classifier_fn(original_data)
         distances = distance_fn(perturbation_matrix)
         return perturbation_matrix, predicate, distances
+
+
+class GlobalBrainExplainer(object):
+    def __init__(self, explainer: BrainExplainer):
+        super().__init__()
+        self.explainer = explainer
+        self.class_names = explainer.class_names
+        self.class_idx_list = [i for i in range(len(explainer.class_names))]
+        self.exp_inst_bulk = []
+        self.prob_threshold = None
+
+    def explain_instance(self,
+                         x: List[float], y: List[int],
+                         classifier_fn: Callable,
+                         num_samples: int,
+                         replacement_method='mean'):
+        self.exp_inst_bulk = []
+        for data, label in zip(x, y):
+            exp = self.explainer.explain_instance(data=data,
+                                                  classifier_fn=classifier_fn,
+                                                  labels=self.class_idx_list,
+                                                  num_samples=num_samples,
+                                                  replacement_method=replacement_method)
+            self.exp_inst_bulk.append({'label': label, 'exp': exp})
+
+        prob_list = []
+        for exp_inst in self.exp_inst_bulk:
+            label, exp = exp_inst['label'], exp_inst['exp']
+            if label == exp.predict_proba.argmax():
+                prob = exp.predict_proba[exp.predict_proba.argmax()]
+                prob_list.append(prob)
+        self.prob_threshold = np.mean(prob_list)
+
+    def explain_classes_channel_importance(self):
+        if len(self.exp_inst_bulk) == 0:
+            assert 'Please execute "explain_instance" first.'
+
+        feature_names = [t[0] for t in self.exp_inst_bulk[0]['exp'].as_list()]
+        feature_names.sort()
+
+        temp = {class_name: {feature_name: [] for feature_name in feature_names}
+                for class_name in self.class_names}
+
+        for exp_inst in self.exp_inst_bulk:
+            label, exp = exp_inst['label'], exp_inst['exp']
+            if exp.predict_proba.argmax() == label and \
+                    exp.predict_proba[exp.predict_proba.argmax()] >= self.prob_threshold:
+                for feature_idx, weight in exp.as_list(label=label):
+                    temp[self.class_names[label]][feature_names[feature_idx]].append(
+                        weight
+                    )
+
+        classes_channel_importance = {class_name: {feature_name: None for feature_name in feature_names}
+                                      for class_name in self.class_names}
+        for class_name in self.class_names:
+            for feature_name, feature_im in temp[class_name].items():
+                classes_channel_importance[class_name][feature_name] = np.mean(feature_im)
+
+        return classes_channel_importance
+
+    def explain_global_channel_importance(self):
+        feature_names = [t[0] for t in self.exp_inst_bulk[0]['exp'].as_list()]
+        feature_names.sort()
+
+        total_channel_importance = {feature_name: [] for feature_name in feature_names}
+        for exp_inst in self.exp_inst_bulk:
+            label, exp_inst = exp_inst['label'], exp_inst['exp']
+            if exp_inst.predict_proba.argmax() == label and \
+                    exp_inst.predict_proba[exp_inst.predict_proba.argmax()] >= self.prob_threshold:
+
+                for values in exp_inst.as_map().values():
+                    channels = np.array([value[0] for value in values])
+                    weights = np.array(np.abs([value[1] for value in values]))
+
+                    for channel_idx, weight in zip(channels, weights):
+                        total_channel_importance[feature_names[channel_idx]].append(
+                            weight
+                        )
+
+        total_channel_importance = {feature_name: np.mean(feature_im) for feature_name, feature_im
+                                    in total_channel_importance.items()}
+        return total_channel_importance

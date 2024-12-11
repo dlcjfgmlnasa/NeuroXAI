@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 
 setup(name='neuroxai',
-      version='0.0.0.1',
+      version='0.0.0.4',
       description='NeuroXAI: Adaptive, robust, explainable surrogate framework for determination of channel importance '
                   'in EEG application',
       url='https://github.com/dlcjfgmlnasa/NeuroXAI',

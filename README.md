@@ -30,12 +30,12 @@ or clone the repository locally and install with
 ```python
 from neuroxai.explanation import BrainExplainer
 
-kernel_size = 25             # exponential smoothing kernel size
+kernel_width = 25            # exponential smoothing kernel size
 num_samples = 500            # training sample size
 replacement_method = 'mean'  # permutation type {mean, zero, noise}
 label_idx_list = [i for i, _ in enumerate(class_names)]
 
-explainer = BrainExplainer(kernel_size=kernel_size, class_names=class_names)
+explainer = BrainExplainer(kernel_width=kernel_width, class_names=class_names)
 exp = explainer.explain_instance(data=x,                       # x => (channel_num, signal_length)
                                  classifier_fn=classifier_fn,  # pretrained model
                                  labels=label_idx_list,
@@ -50,11 +50,11 @@ exp.as_list(label=class_idx)                                   # [result] => cha
 from neuroxai.explanation import BrainExplainer
 from neuroxai.explanation import GlobalBrainExplainer
 
-kernel_size = 25             # exponential smoothing kernel size
+kernel_width = 25            # exponential smoothing kernel size
 num_samples = 500            # training sample size
 replacement_method = 'mean'  # permutation type {mean, zero, noise}
 
-explainer = BrainExplainer(kernel_size=kernel_size, class_names=class_names)
+explainer = BrainExplainer(kernel_width=kernel_width, class_names=class_names)
 global_exp = GlobalBrainExplainer(explainer=explainer)
 global_exp.explain_instance(x=x,                          # x => (epoch_size, channel_num, signal_length)
                             y=y,                          # y => (epoch_size, 1)

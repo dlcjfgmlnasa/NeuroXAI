@@ -25,7 +25,9 @@ or clone the repository locally and install with
 ```
 
 ## Usage 🤖
-**(Example 1)** *NeuroXAI* for sinlge EEG sample
+*NeuroXAI* can derive the channel importance identified by the BCI classifier (i.e., a pretrained model). It works with any type of classifier (e.g., `FBCSP`, `EEGNet`, etc.).
+
+**(Example 1)** *NeuroXAI* for single EEG sample
 
 ```python
 from neuroxai.explanation import BrainExplainer
@@ -62,8 +64,8 @@ global_exp.explain_instance(x=x,                          # x => (epoch_size, ch
                             num_samples=num_samples,
                             replacement_method=replacement_method)
 
-global_exp.explain_classes_channel_importance()           # [result1] => Global channel importance for each class
-global_exp.explain_global_channel_importance()            # [result2] => Global channel importance
+global_exp.explain_classes_channel_importance()           # [result1] => global channel importance for each class
+global_exp.explain_global_channel_importance()            # [result2] => global channel importance
 ```
 
 ## Tutorials <img src="https://img.shields.io/badge/Google Colab-F9AB00?style=flat-square&logo=Google Colab&logoColor=white"/>

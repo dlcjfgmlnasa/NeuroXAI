@@ -69,8 +69,8 @@ global_exp.explain_global_channel_importance()            # [result2] => global 
 ```
 
 ## Tutorials <img src="https://img.shields.io/badge/Google Colab-F9AB00?style=flat-square&logo=Google Colab&logoColor=white"/>
-- [NeuroXAI for FBCSP (Filter Bank Common Spatial Pattern)](https://colab.research.google.com/drive/1iwLv_ldgXw-vT3zWjrejyMcCNcUdfU6l?usp=sharing) 
-- NeuroXAI for EEGNet
+- [NeuroXAI for FBCSP](https://colab.research.google.com/drive/1iwLv_ldgXw-vT3zWjrejyMcCNcUdfU6l?usp=sharing) 
+- [NeuroXAI for EEGNet](https://colab.research.google.com/drive/1CFWR2lHkag3sdbBvIw6PJBc67VwYJFTu?usp=sharing)
 - NeuroXAI based Channel Selection
 - NeuroXAI based Model Debugging
 

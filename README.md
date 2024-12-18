@@ -59,7 +59,7 @@ replacement_method = 'mean'  # permutation type {mean, zero, noise}
 explainer = BrainExplainer(kernel_width=kernel_width, class_names=class_names)
 global_exp = GlobalBrainExplainer(explainer=explainer)
 global_exp.explain_instance(x=x,                          # x => (epoch_size, channel_num, signal_length)
-                            y=y,                          # y => (epoch_size, 1)
+                            y=y,                          # y => (epoch_size, )
                             classifier_fn=classifier_fn,  # pretrained model
                             num_samples=num_samples,
                             replacement_method=replacement_method)
